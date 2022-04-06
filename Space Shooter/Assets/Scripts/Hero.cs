@@ -38,6 +38,7 @@ public class Hero : MonoBehaviour
     #endregion
 
     GameManager gm; //reference to game manager
+    ObjectPool pool; //reference to pool
 
     [Header("Ship Movement")]
     public float speed = 10;
@@ -47,6 +48,9 @@ public class Hero : MonoBehaviour
 
 
     [Space(10)]
+    [Header("Projectile Settings")]
+    public GameObject projectilePrefab; //the game object of the projectile
+    public float projectileSpeed; //speed of the projectile
 
     private GameObject lastTriggerGo; //reference to the last triggering game object
    
@@ -87,6 +91,7 @@ public class Hero : MonoBehaviour
     private void Start()
     {
         gm = GameManager.GM; //find the game manager
+        pool = ObjectPool.POOL; //find the object pool
     }//end Start()
 
 
@@ -109,6 +114,11 @@ public class Hero : MonoBehaviour
 
         //Rotate the ship to make it feel more dynamic
         transform.rotation = Quaternion.Euler(yAxis * pitchMult, xAxis * rollMult, 0);
+
+        if (Input.GetKeyDown(KeyCode.Space)) /***I'M NOT SURE IF THIS IS RIGHT****/
+        {
+            FireProjectile();
+        }
 
     }//end Update()
 
@@ -135,5 +145,20 @@ public class Hero : MonoBehaviour
             Debug.Log("Triggered by non-Enemy " + other.gameObject.name);
         }
     }//end OnTriggerEnter()
+
+    //Shooting Projectile
+    void FireProjectile()
+    {
+        //GameObject projGo = Instantiate<GameObject>(projectilePrefab);
+        GameObject projGo = pool.GetObject();
+
+        if(projGo != null)
+        {
+            projGo.transform.position = transform.position;
+            Rigidbody rb = projGo.GetComponent<Rigidbody>();
+            rb.velocity = Vector3.up * projectileSpeed;
+        }
+
+    }
 
 }
