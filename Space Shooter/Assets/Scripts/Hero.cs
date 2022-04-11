@@ -3,7 +3,7 @@
  * Date Created: March 16, 2022
  * 
  * Last Edited by: Thomas Nguyen
- * Last Edited: April 5, 2022
+ * Last Edited: April 11, 2022
  * 
  * Description: Hero ship controller
 ****/
@@ -40,6 +40,7 @@ public class Hero : MonoBehaviour
     GameManager gm; //reference to game manager
     ObjectPool pool; //reference to pool
 
+
     [Header("Ship Movement")]
     public float speed = 10;
     public float rollMult = -45;
@@ -51,6 +52,10 @@ public class Hero : MonoBehaviour
     [Header("Projectile Settings")]
     public GameObject projectilePrefab; //the game object of the projectile
     public float projectileSpeed; //speed of the projectile
+
+
+    public AudioClip projectileSound; //sound clip of projectile
+    AudioSource audioSource; //reference to audio source
 
     private GameObject lastTriggerGo; //reference to the last triggering game object
    
@@ -92,6 +97,7 @@ public class Hero : MonoBehaviour
     {
         gm = GameManager.GM; //find the game manager
         pool = ObjectPool.POOL; //find the object pool
+        audioSource = GetComponent<AudioSource>(); //reference to audio source
     }//end Start()
 
 
@@ -154,6 +160,11 @@ public class Hero : MonoBehaviour
 
         if(projGo != null)
         {
+            if (audioSource != null && projectileSound != null)
+            {
+                audioSource.PlayOneShot(projectileSound); //play projectile sound
+            }
+
             projGo.transform.position = transform.position;
             Rigidbody rb = projGo.GetComponent<Rigidbody>();
             rb.velocity = Vector3.up * projectileSpeed;
